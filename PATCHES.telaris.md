@@ -120,23 +120,3 @@ The operator does not want admin identities (or live user counts) exposed public
 login screen. The data is fetched server-side and was rendered into the page HTML; removing
 the block is the only way to keep it out of the served source (CSS hiding leaves it in the
 DOM). Admin privileges (`User.admin`) are untouched. Template patch, re-apply on upgrade.
-
-## 6. Stop login-page reload loop from failing auto quick-login — ACTIVE (2026-06-26)
-
-- File: `app/Widgets/Login/login.js` (`Login.quickLogin`)
-- Change: only auto-attempt quick-login **once per tab session**, guarded by
-  `sessionStorage['quickLoginTried']`, instead of on every page load.
-- Backup: `app/Widgets/Login/login.js.telaris-bak`.
-
-### Why
-With saved quick-login credentials, `login.js`'s `start` hook auto-fires
-`Login.quickLogin()` on every page load. When the saved credentials are stale
-(account/password changed), the quick-login RPC is rejected (`POST /ajax` 403 at
-`src/Movim/Controller/Front.php:46`, before `Login::ajaxQuickLogin` can run its
-self-healing `Login.clearQuick`), the session disconnects (`/disconnect` 302),
-and the page reloads `/login` — which auto-fires quick-login again. Result: an
-infinite ~1s reload loop (visible as constant "Linker created" churn in the
-daemon log and a repeating `GET /login -> POST /ajax 403 -> /disconnect -> GET
-/login` cycle in nginx access logs). `sessionStorage` survives the reload, so
-the one-shot guard suppresses the retry; the loop stops and the user gets the
-normal login form. Re-apply on upgrade.
