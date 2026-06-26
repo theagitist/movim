@@ -9,9 +9,7 @@ downgrade.
 The only remaining local modifications to the upstream tree are the **DB/SSL config
 changes** (managed PostgreSQL, verify-ca) to `config/database.php`, `phinx.php`, and
 `src/Movim/Bootstrap.php`. Those are not source bug-workarounds and are documented in
-`CLAUDE.md` (Database section), not here. They live as uncommitted working-tree edits; a
-`git pull`/upgrade can conflict with them, so re-apply after upgrading (the backed-up
-`dbssl.diff` from the v0.34 upgrade re-applies cleanly).
+`CLAUDE.md` (Database section), not here. As of 2026-06-26 all local patches (DB/SSL plus the UX/template ones below) are **committed on the `telaris` branch** of our public fork `github.com/theagitist/movim` (remote `origin`; `upstream` = movim/movim). Upgrade = `git fetch upstream && git rebase upstream/<tag> telaris`, which re-applies these commits and surfaces any conflicts. See `CLAUDE.md` (Git section).
 
 ---
 
@@ -84,3 +82,41 @@ This is a UX patch, NOT an upstream bug fix, so it survives upgrades only if
 re-applied. Re-apply after any `git pull`/upgrade. Rationale + the planned
 "assisted PWA install" follow-up are in the vault note
 `Academia/Projects/Movim/Better notifications and assisted PWA install.md`.
+
+---
+
+## 4. iOS Add-to-Home-Screen install hint — ACTIVE (2026-06-26)
+
+- File: `public/scripts/movim_base.js`
+- Where: the `MovimEvents.registerWindow('loaded', 'movimbase', ...)` handler, inside
+  `if (pwaButton)`, right after the `beforeinstallprompt` listener.
+- Change: iOS Safari never fires `beforeinstallprompt`, so the `#pwa` install block on
+  the login screen stayed hidden and iOS users were never guided to install. Detect iOS
+  (incl. iPad-as-Mac via `MacIntel` + `maxTouchPoints > 1`), exclude standalone
+  (`navigator.standalone`), and reveal `#pwa` with an accurate hint: the real iOS Share
+  glyph (inline SVG), iPhone (bottom toolbar) vs iPad (top toolbar) wording, and the
+  notifications promise gated on iOS 16.4+ (parsed from Safari `Version/X.Y`).
+- Backup: `public/scripts/movim_base.js.telaris-bak`.
+
+### Why
+On iOS the Notification / web-push APIs exist ONLY inside an installed Home-Screen PWA
+(16.4+), never in a Safari tab. So the section-3 launch prompt can never fire in a tab;
+the user must install first. This hint leads them there. Android/desktop Chromium already
+get the install affordance via the existing `beforeinstallprompt` button. UX patch, not an
+upstream bug fix; re-apply on upgrade. Detail: vault note
+`Academia/Projects/Movim/Better notifications and assisted PWA install.md`.
+
+## 5. Remove the public "Administered by" card — ACTIVE (2026-06-26)
+
+- File: `app/Widgets/Login/login.tpl`
+- Change: removed the `{if="$admins->count() > 0"} ... {/if}` block (the `pod_admins`
+  card) that rendered each admin's avatar, real name (`truename`), nickname, blog link,
+  and the connected/population counts to anyone loading the login page.
+- Backup: `app/Widgets/Login/login.tpl.telaris-bak`. Run `php daemon.php
+  clearTemplatesCache` after changing the template.
+
+### Why
+The operator does not want admin identities (or live user counts) exposed publicly on the
+login screen. The data is fetched server-side and was rendered into the page HTML; removing
+the block is the only way to keep it out of the served source (CSS hiding leaves it in the
+DOM). Admin privileges (`User.admin`) are untouched. Template patch, re-apply on upgrade.
