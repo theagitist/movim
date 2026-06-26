@@ -271,6 +271,12 @@ if (typeof MovimWebsocket != 'undefined') {
         Notif_ajaxGet();
         Notif.current(Notif.notifs_key);
 
+        // ponytail: offer notification permission on launch (upstream only offers it in the config menu).
+        // Show Movim's own dialog (not the raw prompt) so the button tap satisfies iOS' user-gesture rule.
+        if (window.Notification && Notification.permission === 'default') {
+            setTimeout(Notif_ajaxHttpRequest, 2000);
+        }
+
         MovimEvents.registerWindow('blur', 'notifs', () => {
             Notif.focused = false;
             Notif_ajaxCurrent('blurred');
