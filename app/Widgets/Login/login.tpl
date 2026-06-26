@@ -133,17 +133,6 @@
                 </ul>
             {/if}
 
-            <ul class="list thick about">
-                <li>
-                    <div>
-                        <p>About Movim</p>
-                        <p>
-                            {$c->__('about_movim.info')} <br />
-                            <a href="https://movim.eu" target="_blank">{$c->__('about_movim.website', 'movim.eu')}</a>
-                        </p>
-                    </div>
-                </li>
-            </ul>
 
             <ul class="list middle hide" id="pwa">
                 <li class="block active">
