@@ -43,6 +43,7 @@ MovimEvents.registerWindow('loaded', 'movimbase', () => {
             e.preventDefault();
             deferredPrompt = e;
             pwaButton.style.display = 'initial';
+            pwaButton.closest('.more')?.classList.remove('hide');
 
             pwaButton.addEventListener('click', () => {
                 deferredPrompt.prompt();
@@ -77,6 +78,7 @@ MovimEvents.registerWindow('loaded', 'movimbase', () => {
             const mb_hint = pwaButton.querySelector('.all');
             if (mb_hint) mb_hint.innerHTML = 'Tap ' + mb_share + ' in the ' + mb_where + mb_tail;
             pwaButton.classList.remove('hide');
+            pwaButton.closest('.more')?.classList.remove('hide');
         }
     }
 });

@@ -114,7 +114,7 @@
         </section>
     </div>
 
-    <div id="form" class="dialog more">
+    <div id="form" class="dialog more hide">
         <section>
 
             {if="isset($info)"}
