@@ -98,12 +98,15 @@ re-applied. Re-apply after any `git pull`/upgrade. Rationale + the planned
 - File: `public/scripts/movim_base.js`
 - Where: the `MovimEvents.registerWindow('loaded', 'movimbase', ...)` handler, inside
   `if (pwaButton)`, right after the `beforeinstallprompt` listener.
-- Change: iOS Safari never fires `beforeinstallprompt`, so the `#pwa` install block on
-  the login screen stayed hidden and iOS users were never guided to install. Detect iOS
-  (incl. iPad-as-Mac via `MacIntel` + `maxTouchPoints > 1`), exclude standalone
-  (`navigator.standalone`), and reveal `#pwa` with an accurate hint: the real iOS Share
-  glyph (inline SVG), iPhone (bottom toolbar) vs iPad (top toolbar) wording, and the
-  notifications promise gated on iOS 16.4+ (parsed from Safari `Version/X.Y`).
+- Change: iOS Safari never fires `beforeinstallprompt`, so iOS users were never guided
+  to install. Detect iOS (incl. iPad-as-Mac via `MacIntel` + `maxTouchPoints > 1`),
+  exclude standalone (`navigator.standalone`), and append a **prominent fixed bottom
+  banner** (`#movim-ios-install`: orange, large bold text, safe-area aware) with the
+  install steps: the real iOS Share glyph **and** the `...` button (Safari hides Share
+  behind `...` depending on version/layout, which JS cannot detect, so we name both),
+  then "Add to Home Screen". Notifications promise gated on iOS 16.4+ (parsed from
+  Safari `Version/X.Y`). Leaves the `#pwa`/`#form` panel hidden (used only by the
+  Chromium `beforeinstallprompt` button).
 - Backup: `public/scripts/movim_base.js.telaris-bak`.
 
 ### Why
