@@ -10,5 +10,7 @@ return [
     'port'      => (int)env('DB_PORT', 5432),
     'username'  => env('DB_USERNAME', 'movim'),
     'password'  => env('DB_PASSWORD', 'movim'),
-    'database'  => env('DB_DATABASE', 'movim')
+    'database'  => env('DB_DATABASE', 'movim'),
+    'sslmode'     => env('DB_SSLMODE', null),
+    'sslrootcert' => env('DB_SSLROOTCERT', null)
 ];
