@@ -61,10 +61,18 @@ whose Accept-Language resolved to an unshipped locale (en-CA was the live trigge
   instead of only from the NotificationConfig (settings) widget:
 
   ```js
-  if (window.Notification && Notification.permission === 'default') {
+  if (window.Notification && Notification.permission === 'default'
+      && !['login', 'account', 'register', 'tag', 'about', 'community'].includes(MovimUtils.urlParts().page)) {
       setTimeout(Notif_ajaxHttpRequest, 2000);
   }
   ```
+
+  **The page guard is required** (added 2026-06-26): without it the prompt fires
+  on the login page too, where `Notif` is not a valid widget, so the RPC 403s
+  (`Front.php:44`) and `movim_rpc.js` reacts to a 403 by calling
+  `MovimUtils.disconnect()` -> `/login` reload -> the attach hook fires again ->
+  an infinite ~1s reload loop. Excluding the public pages stops it; the prompt
+  still fires once the user reaches an authenticated page.
 
 - Backup: `app/Widgets/Notif/notif.js.telaris-bak`.
 

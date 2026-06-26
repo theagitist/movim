@@ -273,7 +273,10 @@ if (typeof MovimWebsocket != 'undefined') {
 
         // ponytail: offer notification permission on launch (upstream only offers it in the config menu).
         // Show Movim's own dialog (not the raw prompt) so the button tap satisfies iOS' user-gesture rule.
-        if (window.Notification && Notification.permission === 'default') {
+        // Only on authenticated pages: Notif is not a valid widget on login/public pages, so the RPC 403s
+        // and movim_rpc.js forces a disconnect -> reload loop. Same exclusion list movim_websocket.js uses.
+        if (window.Notification && Notification.permission === 'default'
+            && !['login', 'account', 'register', 'tag', 'about', 'community'].includes(MovimUtils.urlParts().page)) {
             setTimeout(Notif_ajaxHttpRequest, 2000);
         }
 
