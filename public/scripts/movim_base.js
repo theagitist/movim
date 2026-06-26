@@ -75,16 +75,21 @@ MovimEvents.registerWindow('loaded', 'movimbase', () => {
                 + '<path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 12v7a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-7"/></svg>';
             const mb_b = document.createElement('div');
             mb_b.id = 'movim-ios-install';
-            mb_b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;'
+            // px not rem (Movim sets html{font-size:51%} -> rem renders tiny); !important on
+            // layout because body>*{height:100%;position:relative} would otherwise stretch this
+            // div to cover the whole page.
+            mb_b.style.cssText = 'position:fixed !important;left:0 !important;right:0 !important;'
+                + 'bottom:0 !important;top:auto !important;height:auto !important;width:auto !important;'
+                + 'z-index:99999 !important;margin:0 !important;box-sizing:border-box;'
                 + 'background:#e9540d;color:#fff;text-align:center;'
-                + 'padding:18px 18px calc(18px + env(safe-area-inset-bottom,0px));'
-                + 'box-shadow:0 -3px 18px rgba(0,0,0,.4);font-size:1.15rem;line-height:1.5;';
+                + 'padding:16px 18px calc(16px + env(safe-area-inset-bottom,0px));'
+                + 'box-shadow:0 -3px 18px rgba(0,0,0,.4);font-size:17px;line-height:1.5;';
             mb_b.innerHTML =
-                '<div style="font-size:1.4rem;font-weight:800;margin-bottom:6px;">Install Movim'
+                '<div style="font-size:22px;font-weight:800;margin-bottom:6px;">Install Movim'
                 + (mb_pushOK ? ' to get notifications' : '') + '</div>'
-                + '<div>Tap ' + mb_share + ' <b>or the &#8230; button</b> by the address bar, '
+                + '<div style="font-size:17px;">Tap ' + mb_share + ' <b>or the &#8230; button</b> by the address bar, '
                 + 'then <b>&ldquo;Add to Home Screen&rdquo;</b>.'
-                + (mb_pushOK ? '' : '<br><span style="opacity:.85;font-size:.95rem">Notifications need iOS 16.4 or newer.</span>')
+                + (mb_pushOK ? '' : '<br><span style="opacity:.85;font-size:13px">Notifications need iOS 16.4 or newer.</span>')
                 + '</div>';
             document.body.appendChild(mb_b);
         }
