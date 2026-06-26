@@ -116,44 +116,6 @@
 
     <div id="form" class="dialog more">
         <section>
-            {if="$admins->count() > 0"}
-                <ul class="list middle active">
-                    <li class="subheader">
-                        <div>
-                            <p>
-                                <span class="info">{$c->__('form.connected')}: {$connected}{if="$maxsessions > 0"}/{$maxsessions}{/if} - {$c->__('form.population')}: {$pop}</span>
-                                {$c->__('form.pod_admins')}
-                            </p>
-                        </div>
-                    </li>
-                    {loop="$admins"}
-                        {$contact = $value->contact}
-                        <li class="block" onclick="MovimUtils.redirect('{$c->route('blog', $value->resolvedNickname)}')">
-                            <span class="control gray icon">
-                                <i class="material-symbols">chevron_right</i>
-                            </span>
-                            {if="$contact"}
-                                <span class="primary icon bubble small">
-                                    <img src="{$contact->getPicture()}">
-                                </span>
-                            {else}
-                                <span class="primary icon bubble small color {$value->id|stringToColor}">
-                                    <i class="material-symbols">person</i>
-                                </span>
-                            {/if}
-                            <div>
-                                <p class="line" title="{$value->resolvedNickname}">
-                                    {if="$contact"}
-                                        {$contact->truename}<span class="second">{$value->resolvedNickname}</span>
-                                    {else}
-                                        {$value->resolvedNickname}
-                                    {/if}
-                                </p>
-                            </div>
-                        </li>
-                    {/loop}
-                </ul>
-            {/if}
 
             {if="isset($info)"}
                 <ul class="list">
