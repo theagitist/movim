@@ -59,7 +59,13 @@ var Login = {
     },
 
     quickLogin: function () {
-        if (Login.isQuick()) {
+        // ponytail: only auto-attempt quick-login once per tab session. A failing
+        // attempt (stale saved password, /ajax 403, etc.) tears down the session and
+        // reloads /login; without this guard the reload re-fires quickLogin -> an
+        // infinite ~1s reload loop. sessionStorage survives the reload so the retry
+        // is suppressed; the user can still log in via the form.
+        if (Login.isQuick() && !sessionStorage.getItem('quickLoginTried')) {
+            sessionStorage.setItem('quickLoginTried', '1');
             Login_ajaxQuickLogin(
                 localStorage.getItem('quickDeviceId'),
                 localStorage.getItem('quickLogin'),
